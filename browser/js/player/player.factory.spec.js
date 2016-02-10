@@ -174,30 +174,28 @@ describe('`PlayerFactory` factory', function () {
     });
 
     it('is a decimal between 0 and 1 corresponding to audio play progress', function (done) {
-      this.timeout(6000);
+      this.timeout(3000);
       audioMock.addEventListener('playing', function () {
         setTimeout(function () {
           // the song is about 59 seconds long
-          expect(PlayerFactory.getProgress()).to.be.closeTo(3/59, 0.01);
+          expect(PlayerFactory.getProgress()).to.be.closeTo(1.5/59, 0.01);
           done();
-        }, 3000);
+        }, 1500);
       });
       PlayerFactory.start(song1);
     });
 
     it('stays stable when paused', function (done) {
-      this.timeout(4000);
+      this.timeout(500);
       audioMock.addEventListener('playing', function () {
+        setTimeout(PlayerFactory.pause, 100);
+      });
+      audioMock.addEventListener('pause', function () {
+        var progressAtPause = PlayerFactory.getProgress();
         setTimeout(function () {
-          PlayerFactory.pause();
-          audioMock.addEventListener('pause', function () {
-            var currentProgress = PlayerFactory.getProgress();
-            setTimeout(function () {
-              expect(PlayerFactory.getProgress()).to.equal(currentProgress);
-              done();
-            }, 1000);
-          });
-        }, 2000);
+          expect(PlayerFactory.getProgress()).to.equal(progressAtPause);
+          done();
+        }, 50);
       });
       PlayerFactory.start(song1);
     });
