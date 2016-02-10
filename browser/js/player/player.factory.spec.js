@@ -3,8 +3,13 @@ var expect = chai.expect;
 describe('`PlayerFactory` factory', function () {
   beforeEach(module('juke')); // loads our app
 
-  var audioMock, PlayerFactory, song1, song2;
+  var song1, song2;
+  before(function () {
+    song1 = { audioUrl: 'http://www.stephaniequinn.com/Music/Allegro%20from%20Duet%20in%20C%20Major.mp3' };
+    song2 = { audioUrl: 'http://www.stephaniequinn.com/Music/Jazz%20Rag%20Ensemble%20-%2010.mp3' };
+  });
 
+  var audioMock, PlayerFactory;
   beforeEach(function () {
     // mock audio
     var createElement = document.createElement;
@@ -15,13 +20,10 @@ describe('`PlayerFactory` factory', function () {
       }
       return elem;
     };
-    // test song sources
-    song1 = { audioUrl: 'http://www.stephaniequinn.com/Music/Allegro%20from%20Duet%20in%20C%20Major.mp3' };
-    song2 = { audioUrl: 'http://www.stephaniequinn.com/Music/Jazz%20Rag%20Ensemble%20-%2010.mp3' };
   });
 
   afterEach(function () {
-    audioMock.pause();
+    if (audioMock) audioMock.pause();
   });
 
   beforeEach(inject(function ($injector) {
@@ -37,7 +39,7 @@ describe('`PlayerFactory` factory', function () {
     it('plays given song', function () {
       chai.spy.on(HTMLAudioElement.prototype, 'load');
       chai.spy.on(HTMLAudioElement.prototype, 'play');
-      PlayerFactory.start({ audioUrl: 'http://www.stephaniequinn.com/Music/Allegro%20from%20Duet%20in%20C%20Major.mp3' });
+      PlayerFactory.start(song1);
       expect(HTMLAudioElement.prototype.load).to.have.been.called();
       expect(HTMLAudioElement.prototype.play).to.have.been.called();
     });
