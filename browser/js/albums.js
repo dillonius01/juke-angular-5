@@ -4,7 +4,8 @@ juke.controller('AlbumCtrl', function($scope, $http, $rootScope, $log) {
 
   // load our initial data
   $http.get('/api/albums/')
-  .then(res => $http.get('/api/albums/' + res.data[1]._id)) // temp: use first
+  .then(res => res.data)
+  .then(albums => $http.get('/api/albums/' + albums[0]._id)) // temp: get one
   .then(res => res.data)
   .then(album => {
     album.imageUrl = '/api/albums/' + album._id + '.image';
