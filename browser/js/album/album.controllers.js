@@ -1,56 +1,58 @@
 'use strict';
 
-juke.controller('AlbumCtrl', function($scope, $http, $rootScope, $log) {
+/* ALBUMS (SINGULAR) CONTROLLER */
 
-  // load our initial data
-  $http.get('/api/albums/')
-  .then(res => res.data)
-  .then(albums => $http.get('/api/albums/' + albums[0]._id)) // temp: get one
-  .then(res => res.data)
-  .then(album => {
-    album.imageUrl = '/api/albums/' + album._id + '.image';
-    album.songs.forEach(function (song, i) {
-      song.audioUrl = '/api/songs/' + song._id + '.audio';
-      song.albumIndex = i;
-    });
-    $scope.album = album;
-  })
-  .catch($log.error); // $log service can be turned on and off; also, pre-bound
+juke.controller('AlbumCtrl', function ($scope, $log, PlayerFactory, AlbumFactory) {
+
+  $scope.$on('viewSwap', function (event, data) {
+    if (data.name !== 'oneAlbum') return $scope.showMe = false;
+    $scope.showMe = true;
+    AlbumFactory.fetchById(data.id)
+    .then(album => {
+      $scope.album = album;
+    })
+    .catch($log.error);
+  });
 
   // main toggle
   $scope.toggle = function (song) {
-    if ($scope.playing && song === $scope.currentSong) {
-      $rootScope.$broadcast('pause');
-    } else $rootScope.$broadcast('play', song);
+    if (song !== PlayerFactory.getCurrentSong()) {
+      PlayerFactory.start(song, $scope.album.songs);
+    } else if ( PlayerFactory.isPlaying() ) {
+      PlayerFactory.pause();
+    } else {
+      PlayerFactory.resume();
+    }
   };
 
-  // incoming events (from Player, toggle, or skip)
-  $scope.$on('pause', pause);
-  $scope.$on('play', play);
-  $scope.$on('next', next);
-  $scope.$on('prev', prev);
-
-  // functionality
-  function pause () {
-    $scope.playing = false;
-  }
-  function play (event, song) {
-    $scope.playing = true;
-    $scope.currentSong = song;
+  $scope.getCurrentSong = function () {
+    return PlayerFactory.getCurrentSong();
   };
 
-  // a "true" modulo that wraps negative to the top of the range
-  function mod (num, m) { return ((num % m) + m) % m; };
-
-  // jump `interval` spots in album (negative to go back, default +1)
-  function skip (interval) {
-    if (!$scope.currentSong) return;
-    var index = $scope.currentSong.albumIndex;
-    index = mod( (index + (interval || 1)), $scope.album.songs.length );
-    $scope.currentSong = $scope.album.songs[index];
-    if ($scope.playing) $rootScope.$broadcast('play', $scope.currentSong);
+  $scope.isPlaying = function (song) {
+    return PlayerFactory.isPlaying() && PlayerFactory.getCurrentSong() === song;
   };
-  function next () { skip(1); };
-  function prev () { skip(-1); };
+
+});
+
+/* ALBUMS (PLURAL) CONTROLLER */
+
+juke.controller('AlbumsCtrl', function ($scope, $log, $rootScope, PlayerFactory, AlbumFactory) {
+
+  $scope.showMe = true;
+
+  $scope.$on('viewSwap', function (event, data) {
+    $scope.showMe = (data.name === 'allAlbums');
+  });
+
+  $scope.viewOneAlbum = function (album) {
+    $rootScope.$broadcast('viewSwap', { name: 'oneAlbum', id: album._id });
+  };
+
+  AlbumFactory.fetchAll()
+  .then(albums => {
+    $scope.albums = albums;
+  })
+  .catch($log.error); // $log service can be turned on and off; also, pre-bound
 
 });
