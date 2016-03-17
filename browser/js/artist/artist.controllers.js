@@ -2,7 +2,7 @@
 
 /* ARTISTS (PLURAL) CONTROLLER */
 
-juke.controller('ArtistsCtrl', function ($scope, $log, allArtists) {
+juke.controller('ArtistsCtrl', function ($scope, allArtists) {
 
   $scope.artists = allArtists;
 
@@ -10,7 +10,7 @@ juke.controller('ArtistsCtrl', function ($scope, $log, allArtists) {
 
 /* ARTIST (SINGULAR) CONTROLLER */
 
-juke.controller('ArtistCtrl', function ($scope, $log, PlayerFactory, theArtist) {
+juke.controller('ArtistCtrl', function ($scope, PlayerFactory, theArtist) {
 
   $scope.artist = theArtist;
 

@@ -6,15 +6,15 @@ juke.factory('AlbumFactory', function ($http, SongFactory) {
 
   AlbumFactory.fetchAll = function () {
     return $http.get('/api/albums')
-    .then(response => response.data)
-    .then(albums => albums.map(AlbumFactory.convert) );
+    .then(function (response) { return response.data; })
+    .then(function (albums) { return albums.map(AlbumFactory.convert); });
   };
 
   AlbumFactory.fetchById = function (id) {
     return $http.get('/api/albums/' + id)
-    .then(response => response.data)
+    .then(function (response) { return response.data })
     .then(AlbumFactory.convert)
-    .then(album => {
+    .then(function (album) {
       album.songs = album.songs.map(SongFactory.convert);
       return album;
     });
