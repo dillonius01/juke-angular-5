@@ -4,10 +4,12 @@ juke.controller('AlbumCtrl', function($scope, $http, $rootScope, $log) {
 
   // load our initial data
   $http.get('/api/albums/')
-  .then(res => res.data)
-  .then(albums => $http.get('/api/albums/' + albums[0]._id)) // temp: get one
-  .then(res => res.data)
-  .then(album => {
+  .then(function (res) { return res.data; })
+  .then(function (albums) {
+    return $http.get('/api/albums/' + albums[0]._id); // temp: get one
+  })
+  .then(function (res) { return res.data })
+  .then(function (album) {
     album.imageUrl = '/api/albums/' + album._id + '.image';
     album.songs.forEach(function (song, i) {
       song.audioUrl = '/api/songs/' + song._id + '.audio';
