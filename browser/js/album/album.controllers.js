@@ -8,7 +8,7 @@ juke.controller('AlbumCtrl', function ($scope, $log, PlayerFactory, AlbumFactory
     if (data.name !== 'oneAlbum') return $scope.showMe = false;
     $scope.showMe = true;
     AlbumFactory.fetchById(data.id)
-    .then(album => {
+    .then(function (album) {
       $scope.album = album;
     })
     .catch($log.error);
@@ -50,7 +50,7 @@ juke.controller('AlbumsCtrl', function ($scope, $log, $rootScope, PlayerFactory,
   };
 
   AlbumFactory.fetchAll()
-  .then(albums => {
+  .then(function (albums) {
     $scope.albums = albums;
   })
   .catch($log.error); // $log service can be turned on and off; also, pre-bound

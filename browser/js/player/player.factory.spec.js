@@ -191,9 +191,15 @@ describe('`PlayerFactory` factory', function () {
         setTimeout(PlayerFactory.pause, 100);
       });
       audioMock.addEventListener('pause', function () {
+<<<<<<< HEAD
         var currentProgress = PlayerFactory.getProgress();
         setTimeout(function () {
           expect(PlayerFactory.getProgress()).to.equal(currentProgress);
+=======
+        var progressAtPause = PlayerFactory.getProgress();
+        setTimeout(function () {
+          expect(PlayerFactory.getProgress()).to.equal(progressAtPause);
+>>>>>>> 2-start
           done();
         }, 50);
       });

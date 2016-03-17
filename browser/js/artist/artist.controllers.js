@@ -14,7 +14,7 @@ juke.controller('ArtistsCtrl', function ($scope, $log, $rootScope, ArtistFactory
   };
 
   ArtistFactory.fetchAll()
-  .then(artists => {
+  .then(function (artists) {
     $scope.artists = artists;
   })
   .catch($log.error);
@@ -31,7 +31,7 @@ juke.controller('ArtistCtrl', function ($scope, $log, ArtistFactory, PlayerFacto
     $scope.showMe = true;
 
     ArtistFactory.fetchById(data.id)
-    .then(artist => {
+    .then(function (artist) {
       $scope.artist = artist;
     })
     .catch($log.error);
