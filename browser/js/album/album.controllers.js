@@ -2,7 +2,7 @@
 
 /* ALBUMS (SINGULAR) CONTROLLER */
 
-juke.controller('AlbumCtrl', function ($scope, $log, PlayerFactory, theAlbum) {
+juke.controller('AlbumCtrl', function ($scope, PlayerFactory, theAlbum) {
 
   $scope.album = theAlbum;
 
