@@ -5,7 +5,8 @@
   "main": "server/start.js",
   "scripts": {
     "start": "nodemon --watch server -e js,html server/start.js",
-    "test": "node_modules/.bin/testem"
+    "test": "node_modules/.bin/testem",
+    "seed": "node ./bin/seed"
   },
   "dependencies": {
     "angular": "1.5.0",
