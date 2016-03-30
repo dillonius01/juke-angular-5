@@ -16,6 +16,7 @@ describe('`PlayerFactory` factory', function () {
     document.createElement = function () {
       var elem = createElement.apply(document, arguments);
       if (arguments[0] === 'audio') {
+        elem.volume = 0;
         audioMock = elem;
       }
       return elem;
@@ -174,7 +175,7 @@ describe('`PlayerFactory` factory', function () {
     });
 
     it('is a decimal between 0 and 1 corresponding to audio play progress', function (done) {
-      this.timeout(3000);
+      this.timeout(5000);
       audioMock.addEventListener('playing', function () {
         setTimeout(function () {
           // the song is about 59 seconds long
@@ -186,7 +187,7 @@ describe('`PlayerFactory` factory', function () {
     });
 
     it('stays stable when paused', function (done) {
-      this.timeout(500);
+      this.timeout(1000);
       audioMock.addEventListener('playing', function () {
         setTimeout(PlayerFactory.pause, 100);
       });
