@@ -5,6 +5,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const path = require('path');
 const mime = require('mime');
+const sendSeekable = require('./middleware/sendSeekable');
 
 module.exports = router;
 
@@ -29,15 +30,17 @@ router.param('songId', function (req, res, next, id) {
   .then(null, next);
 });
 
-router.get('/:songId.audio', function (req, res, next) {
+router.get('/:songId.audio', sendSeekable, function (req, res, next) {
   if(!req.song.extension) return next(new Error('No audio for song'));
-  res.set('Content-Type', mime.lookup(req.song.extension));
-  res.set('Content-Length', req.song.size);
-  mongoose.model('Song')
+  var options = {
+    type: mime.lookup(req.song.extension),
+    length: req.song.size
+  };
+  var stream = mongoose.model('Song')
   .findById(req.params.songId)
   .select('buffer')
-  .stream({ transform: song => song.buffer })
-  .pipe(res);
+  .stream({ transform: song => song.buffer });
+  res.sendSeekable(stream, options);
 });
 
 router.get('/:songId.image', function (req, res, next) {
