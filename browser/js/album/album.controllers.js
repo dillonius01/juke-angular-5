@@ -1,18 +1,18 @@
 'use strict';
 
-juke.controller('AlbumCtrl', function($scope, $http, $rootScope, $log) {
+juke.controller('AlbumCtrl', function ($scope, $http, $rootScope, $log) {
 
   // load our initial data
   $http.get('/api/albums/')
   .then(function (res) { return res.data; })
   .then(function (albums) {
-    return $http.get('/api/albums/' + albums[0]._id); // temp: get one
+    return $http.get('/api/albums/' + albums[0].id); // temp: get one
   })
-  .then(function (res) { return res.data })
+  .then(function (res) { return res.data; })
   .then(function (album) {
-    album.imageUrl = '/api/albums/' + album._id + '.image';
+    album.imageUrl = '/api/albums/' + album.id + '/image';
     album.songs.forEach(function (song, i) {
-      song.audioUrl = '/api/songs/' + song._id + '.audio';
+      song.audioUrl = '/api/songs/' + song.id + '/audio';
       song.albumIndex = i;
     });
     $scope.album = album;
