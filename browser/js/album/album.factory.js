@@ -12,7 +12,7 @@ juke.factory('AlbumFactory', function ($http, SongFactory) {
 
   AlbumFactory.fetchById = function (id) {
     return $http.get('/api/albums/' + id)
-    .then(function (response) { return response.data })
+    .then(function (response) { return response.data; })
     .then(AlbumFactory.convert)
     .then(function (album) {
       album.songs = album.songs.map(SongFactory.convert);
@@ -21,7 +21,7 @@ juke.factory('AlbumFactory', function ($http, SongFactory) {
   };
 
   AlbumFactory.convert = function (album) {
-    album.imageUrl = '/api/albums/' + album._id + '.image';
+    album.imageUrl = '/api/albums/' + album.id + '/image';
     return album;
   };
 
