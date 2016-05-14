@@ -9,7 +9,7 @@ juke.controller('PlaylistFormCtrl', function ($scope, $state, PlaylistFactory) {
     PlaylistFactory
     .create($scope.newPlaylist)
     .then(function (playlist) {
-      $state.go('playlist', {playlistId: playlist._id});
+      $state.go('playlist', {playlistId: playlist.id});
     })
     .catch(function (err) {
       $scope.hasSubmitted = false;
@@ -37,7 +37,7 @@ juke.controller('PlaylistCtrl', function ($scope, thePlaylist, PlaylistFactory, 
   $scope.playlist = thePlaylist;
 
   $scope.addSong = function (song) {
-    return PlaylistFactory.addSong($scope.playlist._id, song)
+    return PlaylistFactory.addSong($scope.playlist.id, song)
     .then(function (addedSong) {
       $scope.playlist.songs.push(addedSong);
       return addedSong;

@@ -5,7 +5,7 @@ juke.factory('SongFactory', function ($http) {
   return {
 
     convert: function (song) {
-      song.audioUrl = '/api/songs/' + song._id + '.audio';
+      song.audioUrl = '/api/songs/' + song.id + '/audio';
       return song;
     },
 
