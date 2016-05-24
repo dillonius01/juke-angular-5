@@ -51,4 +51,12 @@ juke.controller('PlayerCtrl', function ($scope, $rootScope) {
   $scope.next = function () { pause(); $rootScope.$broadcast('next'); };
   $scope.prev = function () { pause(); $rootScope.$broadcast('prev'); };
 
+  function seek (decimal) {
+    audio.currentTime = audio.duration * decimal;
+  }
+
+  $scope.handleProgressClick = function (evt) {
+    seek(evt.offsetX / evt.currentTarget.scrollWidth);
+  };
+
 });
