@@ -36,7 +36,7 @@
                 <th></th>
                 <th>Name</th>
                 <th>Artists</th>
-                <th>Genres</th>
+                <th>Genre</th>
               </tr>
             </thead>
             <tbody>
@@ -48,7 +48,7 @@
                 </td>
                 <td>{{ song.name }}</td>
                 <td><span ng-repeat="artist in song.artists">{{ artist.name }}{{ $last ? '' : ', ' }}</span></td>
-                <td>{{ song.genres.join(', ') }}</td>
+                <td>{{ song.genre }}</td>
               </tr>
             </tbody>
           </table>
