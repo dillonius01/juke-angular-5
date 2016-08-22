@@ -1,3 +1,4 @@
+/* global juke */
 'use strict';
 
 /* ALBUMS (SINGULAR) CONTROLLER */
