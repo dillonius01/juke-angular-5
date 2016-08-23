@@ -30,5 +30,12 @@ module.exports = db.define('song', {
         model: db.model('artist')
       }]
     })
+  },
+  instanceMethods: {
+    toJSON: function () { // overriding toJSON to prevent url from leaking to client
+      const plain = this.get({plain: true});
+      delete plain.url;
+      return plain;
+    }
   }
 });
