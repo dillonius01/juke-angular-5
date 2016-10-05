@@ -57,13 +57,14 @@ router.get('/:songId/image', function (req, res, next) {
                               req.params.songId)
   const metadataFile = path.join(cacheDir, 'metadata.json')
   const imageFile = path.join(cacheDir, 'image')
-
-  Promise.map([metadataFile, imageFile], readFile)
+  
+  Promise.all([readFile(metadataFile), readFile(imageFile)])
     .then(([metadata, image]) => {
       res
         .set('Content-Type', JSON.parse(metadata).contentType)
         .send(image)
     }).catch(_ => {
+      console.log(_)
       musicMetadata(open(req.song.url), function (err, metadata) {
         if (err) { return next(err) }
         const pic = metadata.picture[0]
