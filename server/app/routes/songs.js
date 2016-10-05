@@ -10,6 +10,9 @@ const Song = models.Song;
 const request = require('request');
 const musicMetadata = require('musicmetadata')
 const fs = require('fs')
+const path = require('path')
+const Promise = require('bluebird')
+
 
 module.exports = router;
 
@@ -45,15 +48,39 @@ function open(url) {
     : request(url)
 }
 
+const readFile = Promise.promisify(fs.readFile),
+      writeFile = Promise.promisify(fs.writeFile),
+      mkdir = Promise.promisify(fs.mkdir)
+
 router.get('/:songId/image', function (req, res, next) {
-  musicMetadata(open(req.song.url), function (err, metadata) {
-    if (err) { return next(err) }
-    const pic = metadata.picture[0]
-    pic? res
-      .set('Content-Type', mime.lookup(pic.format))
-      .send(pic.data)
-      : res.redirect('/default-album.jpg')
-  })
+  const cacheDir =  path.join(req.app.locals.settings.coverImageCache,
+                              req.params.songId)
+  const metadataFile = path.join(cacheDir, 'metadata.json')
+  const imageFile = path.join(cacheDir, 'image')
+
+  Promise.map([metadataFile, imageFile], readFile)
+    .then(([metadata, image]) => {
+      res
+        .set('Content-Type', JSON.parse(metadata).contentType)
+        .send(image)
+    }).catch(_ => {
+      musicMetadata(open(req.song.url), function (err, metadata) {
+        if (err) { return next(err) }
+        const pic = metadata.picture[0]
+        pic? res
+          .set('Content-Type', mime.lookup(pic.format))
+          .send(pic.data)
+          : res.redirect('/default-album.jpg')
+        if (pic)
+          mkdir(cacheDir)
+          .catch(_ => _)
+          .then(_ => Promise.all([
+            writeFile(metadataFile, JSON.stringify({
+              contentType: mime.lookup(pic.format)
+            })),
+            writeFile(imageFile, pic.data)]))
+      })
+    })
 });
 
 router.get('/:songId/audio', function (req, res, next) {
