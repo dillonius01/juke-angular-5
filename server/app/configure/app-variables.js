@@ -12,6 +12,9 @@ var env = require(path.join(rootPath, './server/env'));
 module.exports = function (app) {
   app.setValue('env', env);
   app.setValue('projectRoot', rootPath);
+  app.setValue('coverImageCache', path.join(rootPath,
+                                            'cache',
+                                            'cover_images'));
   app.setValue('indexHTMLPath', indexPath);
   app.setValue('faviconPath', faviconPath);
   app.setValue('log', logMiddleware);
