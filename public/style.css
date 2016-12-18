@@ -58,3 +58,12 @@ footer {
 
 .album img {
   height: 300px; }
+
+
+[my-double-click] {
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: pointer; }
+
+tr[my-double-click]:hover {
+  background-color: #444; }
